@@ -9,7 +9,7 @@ const SESSION_SECRET = 'secret'
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
 const currentYear = require('./helpers/handlebars-helpers')
-
+console.log(currentYear)
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.engine('.hbs', handlebars({ extname: '.hbs', helpers: currentYear }))
 // 設定使用 Handlebars 做為樣板引擎
