@@ -28,6 +28,18 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(error => next(error)) // 錯誤處理，往下傳送到下一個 middleware，即 error-handler
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    // req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 

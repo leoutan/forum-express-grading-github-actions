@@ -6,6 +6,7 @@ const port = process.env.PORT || 3000
 const session = require('express-session')
 const flash = require('connect-flash')
 const SESSION_SECRET = 'secret'
+const passport = require('./config/passport')
 
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.engine('.hbs', handlebars({ extname: '.hbs' }))
@@ -15,6 +16,8 @@ app.set('views', './views')
 app.use(express.urlencoded({ extended: true }))
 
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(flash())
 
 app.use((req, res, next) => {
