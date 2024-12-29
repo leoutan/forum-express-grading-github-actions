@@ -6,12 +6,12 @@ const router = express.Router()
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const { generalErrorHandler } = require('../middlewares/error-handler')
-const { authenticated } = require('../middlewares/auth-handler')
+const { authenticated, authenticatedAdmin } = require('../middlewares/auth-handler')
 
 const admin = require('./modules/admin')
 const passport = require('../config/passport')
 
-router.use('/admin', admin) // 以.use而非.get才能將任何method的admin請求都導向到admin
+router.use('/admin', authenticatedAdmin, admin) // 以.use而非.get才能將任何method的admin請求都導向到admin
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 
