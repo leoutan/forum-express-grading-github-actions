@@ -22,6 +22,7 @@ router.get('/restaurants', adminController.getRestaurants)
 
 router.put('/restaurants/:id', adminController.putRestaurant)
 router.post('/restaurants', adminController.postRestaurant)
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
 
 router.get('/', (req, res) => {
   return res.redirect('/admin/restaurants')
