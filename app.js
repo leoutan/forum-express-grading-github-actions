@@ -9,6 +9,7 @@ const SESSION_SECRET = 'secret'
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
 const currentYear = require('./helpers/handlebars-helpers')
+const methodOverride = require('method-override')
 console.log(currentYear)
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.engine('.hbs', handlebars({ extname: '.hbs', helpers: currentYear }))
@@ -21,6 +22,7 @@ app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: fals
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
+app.use(methodOverride('_method'))
 
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
