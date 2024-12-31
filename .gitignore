@@ -1,7 +1,9 @@
 node_modules/
 temp/
 upload/
+.github/workflows/ci.yml
 
 .DS_Store
 .env
 .idea
+
