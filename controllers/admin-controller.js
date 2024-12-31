@@ -6,9 +6,10 @@
 
 // module.exports = adminController
 // const { raw } = require('express')
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 // const restaurant = require('../models/restaurant')
 const localFileHandler = require('../helpers/file-helpers')
+const { tr } = require('faker/lib/locales')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -97,6 +98,24 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(error => next(error))
+  },
+  getUsers: async (req, res) => {
+    const users = await User.findAll({ raw: true })
+    return res.render('admin/users', { users })
+  },
+  patchUser: async (req, res, next) => {
+    let user = await User.findByPk(req.params.id)
+    if (!user) {
+      req.flash('error_messages', '用戶不存在')
+      return res.redirect('back')
+    }
+    if (user.isAdmin === true && user.email === 'root@example.com') {
+      req.flash('error_messages', '禁止變更 root 權限')
+      return res.redirect('back')
+    }
+    user = await user.update({ isAdmin: !user.isAdmin })
+    req.flash('success_messages', '使用者權限變更成功')
+    res.redirect('/admin/users')
   }
 }
 

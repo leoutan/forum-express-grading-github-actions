@@ -25,6 +25,9 @@ router.put('/restaurants/:id', upload.single('image'), adminController.putRestau
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
 
+router.get('/users', adminController.getUsers)
+router.patch('/users/:id', adminController.patchUser)
+
 router.get('/', (req, res) => {
   return res.redirect('/admin/restaurants')
 })
