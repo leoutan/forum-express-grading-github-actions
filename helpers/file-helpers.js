@@ -2,7 +2,7 @@ const fs = require('fs')
 const { resolve } = require('path')
 
 const localFileHandler = file => {
-  console.log(file)
+  console.log('file: ', file)
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)
     // 複製檔案到 upload 資料夾
@@ -14,4 +14,5 @@ const localFileHandler = file => {
       .catch(error => reject(error))
   })
 }
+
 module.exports = localFileHandler

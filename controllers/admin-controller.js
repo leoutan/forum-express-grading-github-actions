@@ -6,24 +6,39 @@
 
 // module.exports = adminController
 // const { raw } = require('express')
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 // const restaurant = require('../models/restaurant')
 const localFileHandler = require('../helpers/file-helpers')
 const { tr } = require('faker/lib/locales')
+const { getOffset, getPagination } = require('../helpers/pagination-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ raw: true })
+    const DEFAULT_LIMIT = 10
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
+    Restaurant.findAndCountAll({
+      raw: true,
+      limit,
+      offset,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurants => {
-        res.render('admin/restaurants', { restaurants })
+        res.render('admin/restaurants', {
+          restaurants: restaurants.rows,
+          pagination: getPagination(limit, page, restaurants.count)
+        })
       })
       .catch(error => next(error))
   },
   createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+    Category.findAll({ raw: true })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('name is required')
     const { file } = req
     localFileHandler(file).then(filepath => {
@@ -33,7 +48,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filepath || null
+        image: filepath || null,
+        categoryId
       })
     })
       .then(() => {
@@ -53,17 +69,20 @@ const adminController = {
       .catch(error => next(error))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(restaurant => {
+    Promise.all([
+      Category.findAll({ raw: true }),
+      Restaurant.findByPk(req.params.id, {
+        raw: true
+      })
+    ])
+      .then(([categories, restaurant]) => {
         if (!restaurant) throw new Error('restaurant do not exist')
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { categories, restaurant })
       })
       .catch(error => next(error))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('name is required')
     const { file } = req
     Promise.all([
@@ -78,7 +97,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filepath || restaurant.image
+          image: filepath || restaurant.image,
+          categoryId
         })
       })
       .then(() => {
@@ -116,6 +136,12 @@ const adminController = {
     user = await user.update({ isAdmin: !user.isAdmin })
     req.flash('success_messages', '使用者權限變更成功')
     res.redirect('/admin/users')
+  },
+  getCategories: (req, res) => {
+    Category.findAll({ raw: true })
+      .then(categories => {
+        res.render('admin/categories', { categories })
+      })
   }
 }
 

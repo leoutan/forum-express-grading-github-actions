@@ -1,0 +1,53 @@
+{{> admin-tabs route ='categories'}}
+<div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
+  {{#if category}}
+    <form class="row" action="/admin/categories/{{category.id}}?_method=put" method="post">
+      <div class="col-auto">
+        <input class="form-control" type="text" name="name" id="name" placeholder="Category Name" value="{{category.name}}">
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-warning" type="submit">Update</button>
+        <a class="btn btn-link link-secondary" href="/admin/categories">or Create new</a>
+      </div>
+    </form>
+  {{else}}
+    <form class="row" action="/admin/categories" method="post">
+      <div class="col-auto">
+        <input class="form-control" type="text" name="name" id="name" placeholder="Category Name">
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-warning" type="submit">Create</button>
+      </div>
+    </form>
+  {{/if}}
+  
+  
+  
+</div>
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Category Name</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
+              Edit
+            </a>
+          </button>
+          <form action="/admin/categories/{{this.id}}?_method=delete" method="post" style="display: inline;">
+            <button type="submit" onclick="javascript: return confirm('關聯的餐廳將變成未分類')">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

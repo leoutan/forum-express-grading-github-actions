@@ -1,0 +1,53 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+    <p>{{restaurant.Category.name}}</p>
+  </div>
+  <div class="col-md-4 mb-2">
+    <img class="img-responsive center-block mb-5 " src="{{restaurant.image}}" alt="restaurant Image" style="width: 100%; transition: opacity 5.5s; opacity:0.3;" onload="this.style.opacity=1;">
+    <div class="card">
+      <div class="card-body">
+        <ul class="list-unstyled">
+          <li><strong>Openning Hours: </strong>{{restaurant.openingHours}}</li>
+          <li><strong>Tel: </strong>{{restaurant.tel}}</li>
+          <li><strong>Address: </strong>{{restaurant.address}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <a class="btn btn-outline-secondary" href="/restaurants/{{restaurant.id}}/dashboard">DashBoard</a>
+  </div>
+  <hr>
+</div>
+
+{{!-- Comment List --}}
+<h3>所有評論 :</h3>
+{{#each restaurant.Comments}}
+  {{#if ../user.isAdmin}}
+    <form action="/comments/{{this.id}}?_method=DELETE" method="post" class="float-end">
+      <button type="submit" class="btn btn-danger">DELETE</button>
+    </form>
+  {{/if}}
+  <blockquote class="blockquote mb-0 card-body">
+    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+    <p>{{this.text}}</p>
+    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+  </blockquote>
+  <hr>
+{{/each}}
+
+
+{{!-- Comment form --}}
+<form action="/comments" method="post">
+  <div class="form-row mb-3">
+    <label class="form-label" for="text">留下評論 :</label>
+    <textarea class="form-control" name="text" id="text"></textarea>
+  </div>
+  {{!-- 隱藏的input 讓controller知道是對哪間餐廳評論 --}}
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}"> 
+  <button class="btn btn-primary">submit</button>
+  <a class="btn btn-outline-secondary" href="javascript: history.back()">back</a>
+</form>
+

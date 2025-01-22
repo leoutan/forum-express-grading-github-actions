@@ -9,11 +9,11 @@ const flash = require('connect-flash')
 const SESSION_SECRET = 'secret'
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
-const currentYear = require('./helpers/handlebars-helpers')
+const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
-console.log(currentYear)
+
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
-app.engine('.hbs', handlebars({ extname: '.hbs', helpers: currentYear }))
+app.engine('.hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 // 設定使用 Handlebars 做為樣板引擎
 app.set('view engine', '.hbs')
 app.set('views', './views')
@@ -28,7 +28,7 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-  res.locals.user = getUser(req)
+  res.locals.loginuser = getUser(req)
   // res.locals.currentYear = currentYear()
   next()
 })

@@ -23,11 +23,11 @@ describe('# R03', () => {
           name: 'admin',
           isAdmin: false,
         }])
+        console.log('Mocked User data:', this.UserMock);
 
         // 修改 userController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
         this.userController = createControllerProxy('../controllers/user-controller', { User: this.UserMock })
       })
-
       // 開始測試
       it(' GET /users/:id ', async () => {
         // 模擬 request & response & next
@@ -37,7 +37,6 @@ describe('# R03', () => {
 
         // 測試作業指定的 userController.getUser 函式
         await this.userController.getUser(req, res, next);
-
         // getUser 正確執行的話，應呼叫 res.render
         // res.render 的第 1 個參數要是 'users/profile' 
         // res.render 的第 2 個參數要是 user，其 id 屬性的值應是 1
